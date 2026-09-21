@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>开关损耗镜</title>
+<link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+<header>
+  <h1>开关损耗镜</h1>
+  <div class="sub">双脉冲开关损耗三层可追溯分析：通道对齐 → 基线修正 → 积分窗</div>
+  <div class="topbar">
+    <button id="btnImport">重新导入固定 fixture</button>
+    <button id="btnClear" class="danger">清空数据库</button>
+    <span id="dbState"></span>
+  </div>
+</header>
+
+<main>
+<section class="runs">
+  <label>运行记录
+    <select id="runSelect"></select>
+  </label>
+  <span id="runDesc" class="muted"></span>
+</section>
+
+<section class="panes">
+  <div class="pane" id="paneA">
+    <h2>解释 A</h2>
+    <div class="paneBody">
+      <div class="ctlRow">
+        <label class="chk"><input type="checkbox" id="A_raw" checked> 原始波形</label>
+        <label class="chk"><input type="checkbox" id="A_aligned" checked> 对齐波形</label>
+        <label class="chk"><input type="checkbox" id="A_power" checked> 瞬时功率</label>
+        <button data-side="A" class="btnAnalyze">分析（A）</button>
+        <button data-side="A" class="btnDefault">载入默认决定</button>
+        <a class="dl" id="A_csv" style="display:none">导出 CSV</a>
+      </div>
+      <details open><summary>对齐层（极性 / 传感器延时 / 手动 deskew）</summary><div id="A_align" class="gridForm"></div></details>
+      <details open><summary>基线层（零线窗 s）与积分窗（交叉阈值 / 手工锨点）</summary>
+        <div class="cfgLine">公共网格步长(s)：<input id="A_gridStep" type="number" step="1e-9"></div>
+        <div id="A_windows" class="gridForm"></div>
+      </details>
+      <div class="results" id="A_results"></div>
+      <canvas id="A_canvas" width="900" height="420"></canvas>
+      <div class="hint">手工锨点：在窗口卡片点“取 t0/t1”，再在图上单击；拖动可查看时间。</div>
+    </div>
+  </div>
+  <div class="pane" id="paneB">
+    <h2>解释 B（并排复核）</h2>
+    <div class="paneBody">
+      <div class="ctlRow">
+        <label class="chk"><input type="checkbox" id="B_raw" checked> 原始波形</label>
+        <label class="chk"><input type="checkbox" id="B_aligned" checked> 对齐波形</label>
+        <label class="chk"><input type="checkbox" id="B_power" checked> 瞬时功率</label>
+        <button data-side="B" class="btnAnalyze">分析（B）</button>
+        <button data-side="B" class="btnDefault">载入默认决定</button>
+        <a class="dl" id="B_csv" style="display:none">导出 CSV</a>
+      </div>
+      <details open><summary>对齐层</summary><div id="B_align" class="gridForm"></div></details>
+      <details open><summary>基线层与积分窗</summary>
+        <div class="cfgLine">公共网格步长(s)：<input id="B_gridStep" type="number" step="1e-9"></div>
+        <div id="B_windows" class="gridForm"></div>
+      </details>
+      <div class="results" id="B_results"></div>
+      <canvas id="B_canvas" width="900" height="420"></canvas>
+      <div class="hint">两栏各自保存分析决定，可对同一记录做两种解释并排复核。</div>
+    </div>
+  </div>
+</section>
+
+<section class="history">
+  <h2>历史分析（可重新载入复核）</h2>
+  <div id="history"></div>
+</section>
+</main>
+<script src="/static/app.js"></script>
+</body>
+</html>
